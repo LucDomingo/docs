@@ -40,6 +40,27 @@ sysadm_u:sysadm_r:sysadm_t:s0-s0:c0.c1023
 It shows us the context of thecurrent user.
 
 ## Dissecting the SELinux context
-
+```
+$ ps -eZ | grep sshd
+system_u:system_r:sshd_t:s0-s0:c0.c1023 2629 ? 00:00:00sshd
+```
+As we can see, the process is assigned a context that contains the following fields: 
+- The SELinux user system_u
+- The SELinux role system_r
+- The SELinux type (also known as the domain when we arelooking at a running process) sshd_t
+- The sensitivity level s0-s0:c0.c1023
+```
+$ ls /proc/$$/attr
+current  exec  fscreate  keycreate  prev  sockcreate
+```
+All these files, if read, display either nothing or an SELinux context.If it is empty, then that means the application has not explicitly set acontext for that particular purpose, and the SELinux context will bededuced either from the policy or inherited from its parent.The meaning of the files are as follows:
+- The current file displays the current SELinux context of the process.
+- The exec file displays the SELinux context that will be assigned by the next application execution done through this application. It is usually empty.
+- The fscreate file displays the SELinux context that will beassigned to the next file written by the application. It is usually empty.
+- The keycreate file displays the SELinux context that will beassigned to the keys cached in the kernel by this application. It isusually empty.
+ - The prev file displays the previous SELinux context for thisparticular process. This is usually the context of its parentapplication.
+ - The sockcreate file displays the SELinux context that will beassigned to the next socket created by the application. It isusually empty.
+ 
+ If an application has multiple subtasks, then the same information isavailable in each subtask directory at/proc/<pid>/task/<taskid>/attr.
 
 

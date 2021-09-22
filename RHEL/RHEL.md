@@ -1,10 +1,15 @@
 # RHEL
 ## Table of Contents
 [Managing Storage](#Managing-Storage)
+
 [Managing Advanced Storage](#Managing-Advanced-Storage)
+
 [Basic Kernel Management](#Basic-Kernel-Management)
+
 [Understanding Systemd](#Understanding-Systemd)
+
 [Managing and Understanding the Boot Procedure](#Managing-and-Understanding-the-Boot-Procedure)
+
 [Essential Troubleshooting Skills](#Essential-Troubleshooting-Skills)
 
 ## Managing Storage

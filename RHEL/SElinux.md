@@ -26,6 +26,20 @@ security models within containers running on the system. Right now,it is not pos
 SELinux does not change the Linux DAC implementation, nor can itoverride denials made by the Linux DAC permissions. If a regularsystem (without SELinux) prevents a particular access, there isnothing SELinux can do to override this decision. This is because theLSM hooks are triggered after the regular DAC permission checksexecute, a conscious design decision from the LSM project.
 
 ## Enabling SELinux support
-An SELinux implementation contains the following:The SELinux kernel subsystem, implemented in the Linux kernelthrough LSMLibraries, used by applications that need to interact with SELinuxUtilities, used by administrators to interact with SELinuxPolicies, which define the access controls themselves.
+An SELinux implementation contains the following:The SELinux kernel subsystem, implemented in the Linux kernel through LSM Libraries, used by applications that need to interact with SELinux Utilities, used by administrators to interact with SELinux Policies, which define the access controls themselves.
 
 ## Labeling all resources and objects
+When SELinux has to decide whether it has to allow or deny aparticular action, it makes a decision based on the context of both
+the subject (who is initiating the action) and the object (which isthe target of the action). These contexts (or parts of the context) arementioned in the policy rules that SELinux enforces.The context of a process is what identifies the process to SELinux.SELinux has no notion of Linux process ownership and does not carehow the process is called, which process ID it has, and what accountthe process runs as. **All it wants to know is what the context of that process is, represented to users and administrators as a label. Label and context are often used interchangeably, and although there is a technical distinction (one is a representation of the other)**.
+
+Let's look at an example label – the context of the current user:
+```
+$ id -Z
+sysadm_u:sysadm_r:sysadm_t:s0-s0:c0.c1023
+```
+It shows us the context of thecurrent user.
+
+## Dissecting the SELinux context
+
+
+

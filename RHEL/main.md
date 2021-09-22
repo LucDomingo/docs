@@ -1,25 +1,30 @@
 # RHEL
 ## Table of Contents
-[Managing Storage](#Managing_Storage)
-[Managing Advanced Storage](#Managing_Advanced_Storage)
-[Basic Kernel Management](#Basic_Kernel_Management)
-[Understanding Systemd](#Understanding_Systemd)
-[Managing and Understanding the Boot Procedure](#Managing_and_Understanding_the_Boot_Procedure)
-[Essential Troubleshooting Skills](#Essential_Troubleshooting_Skills)
+[Managing Storage](#Managing-Storage)
+
+[Managing Advanced Storage](#Managing-Advanced-Storage)
+
+[Basic Kernel Management](#Basic-Kernel-Management)
+
+[Understanding Systemd](#Understanding-Systemd)
+
+[Managing and Understanding the Boot Procedure](#Managing-and-Understanding-the-Boot-Procedure)
+
+[Essential Troubleshooting Skills](#Essential-Troubleshooting-Skills)
 
 ## Managing Storage
 ### Understanding MBR and GPT Partitions
 Using more than one partition on a system makes sense for multiple reasons:
-- Its easier to distinguish between different types of data.
+- It's easier to distinguish between different types of data.
 - Specific mount options can be used to enhance security or performance
-- Its easier to create a backup strategy where only relevant portions of
+- It's easier to create a backup strategy where only relevant portions of
 the OS are backed up.
 - If one partition accidentally fills up completely, the other partitions still
 are usable and your system might not crash immediately.
 
 ### Understanding the MBR Partitioning Scheme
 While booting a computer, the Basic Input Output System (BIOS) was loaded to access hardware devices.From the BIOS, the bootable disk device was read, and on this bootable
-device, the MBR was allocated. The MBR contains all that is needed to start a computer, including a boot loader and a partition table. The MBR was defined as the first 512 bytes on a computer hard drive, and in the MBR an operating system boot loader (such as GRUB 2; see Chapter 17, Managing and Understanding the Boot Procedure) was present, as well as a partition table. The size that was used for the partition table was relatively small, just 64 bytes, with the result that in the MBR no more than four partitions could be created. Since partition size data was stored in 32-bit values, and a default sector size of 512 bytes was used, the maximum size that could be used by a partition was limited to 2 TiB.
+device, the MBR was allocated. The MBR contains all that is needed to start a computer, including a boot loader and a partition table. The MBR was defined as the first 512 bytes on a computer hard drive, and in the MBR an operating system boot loader was present, as well as a partition table. The size that was used for the partition table was relatively small, just 64 bytes, with the result that in the MBR no more than four partitions could be created. Since partition size data was stored in 32-bit values, and a default sector size of 512 bytes was used, the maximum size that could be used by a partition was limited to 2 TiB.
 In the MBR, just four partitions could be created. Because many PC
 operating systems needed more than four partitions, a solution was found to
 go beyond the number of four. In the MBR, one partition could be created
@@ -123,7 +128,7 @@ Last sector, +sectors or +size{K,M,G,T,P} (24111104-
 default 41943039): +1G
 Created a new partition 3 of type 'Linux' and of size 1
 GiB
-After you enter the partitions ending boundary, fdisk will show a
+After you enter the partition's ending boundary, fdisk will show a
 confirmation.
 9. At this point, you can define the partition type. By default, a Linux
 partition type is used. If you want the partition to be of any other
@@ -178,7 +183,7 @@ A Windows-compatible file system that is not supported on RHEL8.
 A file system that offers compatibility with Windows and Mac and
 is the functional equivalent of the FAT32 file system. Useful on USB
 thumb drives that exchange data with other computers but not on a
-servers hard disks.
+server's hard disks.
 
 ### Mounting File Systems
 Just creating a partition and putting a file system on it is not enough to start using it. To use a partition, you have to mount it as well. By mounting a partition (or better, the file system on it), you make its contents accessible through a specific directory. To mount a file system, some information is needed:
@@ -243,7 +248,7 @@ Start position of the partition, type 1MiB, and when asked for the end, enter 1G
 close the parted interface.
 8. Now that the partition has been created, you need to flag it as an LVM physical
 volume. To do this, type pvcreate /dev/sdc1. You should now get this output:
-Physical volume /dev/sdc1 successfully created.
+Physical volume "/dev/sdc1" successfully created.
 9. Type pvs to verify that the physical volume has been created successfully. The
 output may look like Example 15-3. Notice that in this listing another physical
 volume already exists; that is because RHEL uses LVM by default to organize
@@ -264,7 +269,7 @@ vgdisplay, vgs
 The volume size can be specified as an absolute value using the -L option. Use, for
 instance, -L 5G to create an LVM volume with a 5-GiB size. Alternatively, you can use
 relative sizes with the -l option. For instance, use -l 50%FREE to use half of all
-available disk space. Youll further need to specify the name of the volume group that the
+available disk space. You'll further need to specify the name of the volume group that the
 logical volume is assigned to, and optionally (but highly recommended), you can use -n
 to specify the name of the logical volume. For instance, use lvcreate -n lvvol1 -L 100M
 vgdata to create a logical volume with the name lvvol1 and add that to the vgdata
@@ -341,7 +346,7 @@ amount of disk space you want to add, as in lvresize -L +1G -r /dev/vgdata/lvdat
 1. Type pvs and vgs to show the current physical volume and volume group
 configuration.
 2. Use parted to add another partition with a size of 1 GiB. Do not forget to flag this
-partition with the LVM partition type using set lvm on. Ill assume this new
+partition with the LVM partition type using set lvm on. I'll assume this new
 partition is /dev/sdb2 for the rest of this exercise. Replace this name with the name
 used on your configuration if it is different.
 3. Type vgextend vgdata /dev/sdb2 to extend vgdata with the total size of the
@@ -354,7 +359,7 @@ all available disk space in the volume group.
 8. Type lvs and df -h again to verify that the added disk space has become available.
 9. Type lvreduce -r -L -50M /dev/vgdata/lvdata. This shrinks the lvdata volume by
 50 MB. Notice that while doing this the volume is temporarily unmounted, which
-happens automatically. Also note that this step works only if youre using an Ext4
+happens automatically. Also note that this step works only if you're using an Ext4
 file system. (XFS cannot be shrunk.)
 ```
 ##### See also
@@ -474,7 +479,7 @@ Type=tmpfs
 Options=mode=1777,strictatime,nosuid,nodev
 ```
 ### Understanding Systemd Socket Units
-A socket may be defined as a file but also as a port on which Systemd will be listening for incoming connections. That way, a service doesnt have to run continuously but instead will start only if a connection is coming in on the socket that is specified. Every socket needs a corresponding service file.
+A socket may be defined as a file but also as a port on which Systemd will be listening for incoming connections. That way, a service doesn't have to run continuously but instead will start only if a connection is coming in on the socket that is specified. Every socket needs a corresponding service file.
 ```
 [Unit]
 Description=Cockpit Web Service Socket
@@ -505,7 +510,7 @@ AllowIsolate=yes
 [Install]
 Alias=default.target
 ```
-You can see that by itself the target unit does not contain much. It just defines what it requires and which services and targets it cannot coexist with. It also defines load ordering, by using the After statement in the [Unit] section. The target file does not contain any information about the units that should be included; that is defined in the [Install] section of the different unit files. When you add a unit to a target, under the hood a symbolic link is created in the target directory in /etc/systemd/system. If, for instance, you enabled the vsftpd service to be automatically started, youll find that a symbolic link /etc/systemd/system/multi-user.target/wants/vsftpd.service has been added, pointing to the unit file in /usr/lib/systemd/system/vsftpd.service and thus ensuring that the unit will automatically be started. In Systemd terminology, this symbolic link is known as a want, as it defines what the target wants to start when it is processed.
+You can see that by itself the target unit does not contain much. It just defines what it requires and which services and targets it cannot coexist with. It also defines load ordering, by using the After statement in the [Unit] section. The target file does not contain any information about the units that should be included; that is defined in the [Install] section of the different unit files. When you add a unit to a target, under the hood a symbolic link is created in the target directory in /etc/systemd/system. If, for instance, you enabled the vsftpd service to be automatically started, you'll find that a symbolic link /etc/systemd/system/multi-user.target/wants/vsftpd.service has been added, pointing to the unit file in /usr/lib/systemd/system/vsftpd.service and thus ensuring that the unit will automatically be started. In Systemd terminology, this symbolic link is known as a want, as it defines what the target wants to start when it is processed.
 ### Managing Dependencies
 In general, there are two ways to manage Systemd dependencies: Unit types such as socket and path are directly related to a service unit. Accessing either of these unit types will automatically trigger the service type. Dependencies can be defined within the unit, using keywords like Requires, Requisite, After, and Before. As an administrator, you can request a list of unit dependencies. Type systemctl list-dependencies followed by a unit name to find out which dependencies it has; add the --reverse option to find out which units are
 dependents of this unit.
@@ -524,10 +529,10 @@ See also : Excellent blog about systemd (https://www.freedesktop.org/wiki/Softwa
 ## Managing and Understanding the Boot Procedure
 
 - emergency.target: In this target only a minimal number of units are started, just
-enough to fix your system if something is seriously wrong. Youll find that it is
+enough to fix your system if something is seriously wrong. You'll find that it is
 quite minimal, as some important units are not started.
 - rescue.target: This target starts all units that are required to get a fully operational
-Linux system. It doesnt start nonessential services though.
+Linux system. It doesn't start nonessential services though.
 - multi-user.target: This target is often used as the default target a system starts in.
 It starts everything that is needed for full system functionality and is commonly
 used on servers.
@@ -536,7 +541,7 @@ needed for full functionality, as well as a graphical interface.
 
 ### Understanding GRUB 2
 The GRUB 2 boot loader makes sure that you can boot Linux. GRUB 2 is installed in
-the boot sector of your servers hard drive and is configured to load a Linux kernel and
+the boot sector of your server's hard drive and is configured to load a Linux kernel and
 the initramfs:
 - The initramfs contains drivers that are needed to start your server. It contains a
 mini file system that is mounted during boot. In it are kernel modules that are
@@ -548,7 +553,7 @@ cases, though, you might have to change its configuration. To apply changes to t
 GRUB 2 configuration, the starting point is the /etc/default/grub file, which has
 options that tell GRUB what to do and how to do it.
 Apart from the configuration in /etc/default/grub, there are a few configuration files in
-/etc/grub.d. In these files, youll find rather complicated shell code that tells GRUB
+/etc/grub.d. In these files, you'll find rather complicated shell code that tells GRUB
 what to load and how to load it. You typically do not have to modify these files. You
 also do not need to modify anything if you want the capability to select from different
 kernels while booting. GRUB 2 picks up new kernels automatically and adds them to
@@ -557,11 +562,11 @@ Based on the configuration files mentioned previously, the main configuration fi
 created. If your system is a BIOS system, the name of the file is /boot/grub2/grub.cfg.
 On a UEFI system the file is written to /boot/efi/EFI/redhat on RHEL and
 /boot/efi/EFI/centos on CentOS. After making modifications to the GRUB 2
-configuration, youll need to regenerate the relevant configuration file, which is why
+configuration, you'll need to regenerate the relevant configuration file, which is why
 you should know the name of the file that applies to your system architecture. Do not
 edit it, as this file is automatically generated.
 While working with GRUB 2, you need to know a bit about kernel boot arguments.
-There are many of them, and most of them youll never use, but it is good to know
+There are many of them, and most of them you'll never use, but it is good to know
 where you can find them. Type man 7 bootparam for a man page that contains an
 excellent description of all boot parameters that you may use while starting the kernel.
 ```

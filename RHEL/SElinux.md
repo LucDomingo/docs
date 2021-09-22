@@ -1,5 +1,16 @@
 # SElinux
 
+## Table of Contents
+[Providing more security forLinux](#Providing-more-security-for-Linux)
+
+[Introducing Linux Security Modules(LSM)](#Introducing-Linux-Security-Modules(LSM))
+
+[Extending regular DAC with SELinux](#Extending-regular-DAC-with-SELinux)
+
+[Enabling SELinux support](#Enabling-SELinux-support)
+
+[Labeling all resources and objects](#Labeling-all-resources-and-objects)
+
 ## Providing more security forLinux
 Linux system are discretionary; it is up to theusers how the access controls should behave.
 The Linux **discretionary access control (DAC)** mechanism is basedon the user and/or group information of the process and 
@@ -12,4 +23,9 @@ Mandatory access control systems such as SELinux are supported inthe Linux kerne
 security models within containers running on the system. Right now,it is not possible to implement a different security module within aLinux container, and the security within the container falls back tothe security module of the host.
 
 ## Extending regular DAC with SELinux
+SELinux does not change the Linux DAC implementation, nor can itoverride denials made by the Linux DAC permissions. If a regularsystem (without SELinux) prevents a particular access, there isnothing SELinux can do to override this decision. This is because theLSM hooks are triggered after the regular DAC permission checksexecute, a conscious design decision from the LSM project.
 
+## Enabling SELinux support
+An SELinux implementation contains the following:The SELinux kernel subsystem, implemented in the Linux kernelthrough LSMLibraries, used by applications that need to interact with SELinuxUtilities, used by administrators to interact with SELinuxPolicies, which define the access controls themselves.
+
+## Labeling all resources and objects

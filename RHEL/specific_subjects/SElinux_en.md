@@ -11,6 +11,10 @@
 
 [Labeling all resources and objects](#Labeling-all-resources-and-objects)
 
+[Enforcing access through types](#Enforcing-access-through-types)
+
+[Granting domain access through roles](#Granting-domain-access-through-roles)
+
 ## Providing more security forLinux
 Linux system are discretionary; it is up to theusers how the access controls should behave.
 The Linux **discretionary access control (DAC)** mechanism is basedon the user and/or group information of the process and 
@@ -64,8 +68,9 @@ All these files, if read, display either nothing or an SELinux context.If it is 
  If an application has multiple subtasks, then the same information isavailable in each subtask directory at/proc/<pid>/task/<taskid>/attr.
 
 ## Enforcing access through types
+
 The SELinux type (the third part of an SELinux context) of a process (called
-the domain) is the basis of the fine-grained access controls of that process
+the **domain**) is the basis of the fine-grained access controls of that process
 with respect to itself and other types. Take a look at the following dbus-daemon processes:
 ```
 # ps -eZ | grep dbus-daemon
@@ -83,4 +88,52 @@ though their binaries are the same, they both serve a different purpose on the
 system and as such have a different type assigned. SELinux then uses this
 type to govern the actions allowed by the process toward other types,
 including how system_dbusd_t can interact with swift_dbusd_t.
+
+## Granting domain access through roles
+
+SELinux roles define which types (domains) can be accessed from the
+current context. These types (domains) on their part define the permissions.
+As such, SELinux roles help define what a user (who has access to one or
+more roles) can and cannot do.
+
+- The user_r role is meant for restricted users. This role is only
+allowed to have processes with types specific to end-user applications.
+Privileged types, including those used to switch to another Linux user,
+are not allowed for this role.
+- The staff_r role is meant for non-critical operations. This role is
+generally restricted to the same applications as the restricted user, but
+it has the ability to switch roles. It is the default role for operators to
+have (so as to keep those users in their least privileged role as long as
+possible).
+- The sysadm_r role is meant for system administrators. This role is
+very privileged, enabling various system administration tasks.
+However, certain end-user application types might not be supported
+(especially if those types are used for potentially vulnerable or
+untrusted software) to keep the system free from infections.
+- The secadm_r role is meant for security administrators. This role
+allows changing the SELinux policy and manipulating the SELinux
+controls. It is generally used when a separation of duties is needed
+between system administrators and system policy management.
+- The system_r role is meant for daemons and background processes.
+This role is quite privileged, supporting the various daemon and
+- The unconfined_r role is meant for end users. This role allows a
+limited number of types, but those types are very privileged as they
+allow running any application launched by a user (or another
+unconfined process) in a more or less unconfined manner (not
+restricted by SELinux rules). This role, as such, is only available if the
+system administrator wants to protect certain processes (mostly
+daemons) while keeping the rest of the system operations almost
+untouched by SELinux.
+
+## Limiting roles through users
+An SELinux user (the first part of an SELinux context) is not the same as a
+Linux (account) user. Unlike Linux user information, which can change
+while the user is working on the system (through tools such as sudo or su),
+the SELinux policy can (and generally will) enforce that the SELinux user
+remains the same even when the Linux user itself has changed. Because of
+the immutable state of the SELinux user, we can implement specific access
+controls to ensure that users cannot work around the set of permissions
+granted to them, even when they get privileged access.
+
+![alt text](../img/Capture.PNG "Mapping Linux accounts to SELinux users")
 

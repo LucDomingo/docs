@@ -63,4 +63,24 @@ All these files, if read, display either nothing or an SELinux context.If it is 
  
  If an application has multiple subtasks, then the same information isavailable in each subtask directory at/proc/<pid>/task/<taskid>/attr.
 
+## Enforcing access through types
+The SELinux type (the third part of an SELinux context) of a process (called
+the domain) is the basis of the fine-grained access controls of that process
+with respect to itself and other types. Take a look at the following dbus-daemon processes:
+```
+# ps -eZ | grep dbus-daemon
+swift_u:swift_r:swift_dbusd_t:s0-s0:c0.c512 571 ?
+00:00:01 dbus-daemon
+swift_u:swift_r:swift_dbusd_t:s0-s0:c0.c512 649 ?
+00:00:00 dbus-daemon
+system_u:system_r:system_dbusd_t:s0-s0:c0.c1023
+2498 ? 00:00:00 dbus-daemon
+```
+In this example, one dbus-daemon process is the system D-Bus daemon
+running with the aptly named system_dbusd_t type, whereas two other
+ones are running with the swift_dbusd_t type assigned to it. Even
+though their binaries are the same, they both serve a different purpose on the
+system and as such have a different type assigned. SELinux then uses this
+type to govern the actions allowed by the process toward other types,
+including how system_dbusd_t can interact with swift_dbusd_t.
 

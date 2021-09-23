@@ -137,3 +137,34 @@ granted to them, even when they get privileged access.
 
 ![alt text](../img/Capture.PNG "Mapping Linux accounts to SELinux users")
 
+## User-oriented SELinux contexts
+
+Once logged in to a system, our user will run inside a certain context. This
+user context defines the rights and privileges that we, as a user, have on the
+system. The SELinux user defines the roles that the user can switch to. SELinux
+roles themselves define the application domains that the user can use. By
+default, a fixed number of SELinux users are available on the system, but
+administrators can create additional SELinux users. It is also the
+administrator's task to assign Linux logins to SELinux users.
+
+Let's use a few examples to show how we make these mappings work. For
+more intricate details on this, see the SELinux and PAM section. We'll
+assume we have a Linux user called lisa, and we want her account to be
+mapped to the staff_u SELinux user, whereas all other users in the
+users group are mapped to the user_u SELinux user.
+We can accomplish this through the semanage login command, using
+the -a (add) option:
+```
+# semanage login -a -s staff_u lisa
+# semanage login -a -s user_u %users
+```
+The -s parameter assigns the SELinux user to the given login, whereas the
+-r parameter handles the sensitivity (and categories) for that user.
+When we modify a user's settings, we should also reset the contexts of
+that user's home directory (while that user is not logged in). To accomplish
+this, use restorecon as follows:
+```
+# restorecon -RF /home/lisa
+```
+The -F option in the preceding command forces a reset, while -R does this
+recursively.

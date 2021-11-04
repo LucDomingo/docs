@@ -214,6 +214,7 @@ fn main() {
     println!("p.x = {}", p.x());
 }
 ```
+### Templating
 ```
 struct Point<T, U> {
     x: T,
